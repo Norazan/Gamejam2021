@@ -77,6 +77,26 @@ public class Tile : MonoBehaviour
         }
     }
 
+    public DIRECTION DirectionFromWall(GameObject wallObj)
+    {
+        if (wallObj == NorthWall)
+        {
+            return DIRECTION.NORTH;
+        }
+        else if (wallObj == EastWall)
+        {
+            return DIRECTION.EAST;
+        }
+        else if (wallObj == SouthWall)
+        {
+            return DIRECTION.SOUTH;
+        }
+        else
+        {
+            return DIRECTION.WEST;
+        }
+    }
+
     public enum DIRECTION
     {
         NORTH,
