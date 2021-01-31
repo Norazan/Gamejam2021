@@ -10,13 +10,13 @@ GameObject:
   m_Component:
   - component: {fileID: 316370022913369887}
   - component: {fileID: 316370022913369312}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: North
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &316370022913369887
 Transform:
   m_ObjectHideFlags: 0
@@ -68,13 +68,13 @@ GameObject:
   m_Component:
   - component: {fileID: 316370022937480097}
   - component: {fileID: 316370022937480098}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: West
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &316370022937480097
 Transform:
   m_ObjectHideFlags: 0
@@ -126,13 +126,13 @@ GameObject:
   m_Component:
   - component: {fileID: 316370023150175195}
   - component: {fileID: 316370023150175196}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: South
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &316370023150175195
 Transform:
   m_ObjectHideFlags: 0
@@ -185,7 +185,7 @@ GameObject:
   - component: {fileID: 316370023757295489}
   - component: {fileID: 1043938769}
   m_Layer: 0
-  m_Name: TilePrefab
+  m_Name: Normal1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -222,15 +222,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2432c7a1dc4470145bdfc5419419bec1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isNorthExit: 0
-  isEastExit: 0
-  isSouthExit: 0
-  isWestExit: 0
-  North: {fileID: 316370022913369886}
-  East: {fileID: 316370024223026578}
-  South: {fileID: 316370023150175194}
-  West: {fileID: 316370022937480096}
-  exits: 
+  blockades: 
+  NorthWall: {fileID: 316370022913369886}
+  EastWall: {fileID: 316370024223026578}
+  SouthWall: {fileID: 316370023150175194}
+  WestWall: {fileID: 316370022937480096}
 --- !u!1 &316370023803253736
 GameObject:
   m_ObjectHideFlags: 0
@@ -323,13 +319,13 @@ GameObject:
   m_Component:
   - component: {fileID: 6530087011795301737}
   - component: {fileID: 316370024223026580}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: East
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6530087011795301737
 Transform:
   m_ObjectHideFlags: 0
