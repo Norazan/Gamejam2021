@@ -19,6 +19,8 @@ public class PlayerMovement : MonoBehaviour
     public float hurtTime = 0.4f;
     float recoveryTime = 0.0f;
 
+    public int attackDamage = 1;
+
     // Update is called once per frame
     void Update()
     {
@@ -72,9 +74,9 @@ public class PlayerMovement : MonoBehaviour
         // Detect enemies within range
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
 
-
         // Apply damage to all enemies
         foreach(Collider2D enemy in hitEnemies) {
+            enemy.GetComponent<EnemyAI>().TakeDamage(attackDamage);
             Debug.Log("We hit " + enemy.name);
         }
 
@@ -92,6 +94,7 @@ public class PlayerMovement : MonoBehaviour
         // If not, apply invulnerability
     }
 
+    // Debug tool, visualizes attack range
     void OnDrawGizmosSelected() {
         if (attackPoint == null)
             return;
