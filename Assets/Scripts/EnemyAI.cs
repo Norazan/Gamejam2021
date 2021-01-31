@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
-
     // Animation and general variables
     public Rigidbody2D rb;
     public Animator animator;
@@ -30,6 +29,9 @@ public class EnemyAI : MonoBehaviour
     public int maxHealth = 1;
     int currentHealth;
 
+    public float damage;
+    private bool movementDisabled = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,9 +41,9 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Press X to trigger enemy retreat
-        if (Input.GetKeyDown(KeyCode.X)) {
-            Retreat();
+        if (GameController.instance.isGameOver)
+        {
+            return;
         }
 
         // If the enemy is chasing, keep chasing
@@ -76,12 +78,17 @@ public class EnemyAI : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (GameController.instance.isGameOver || movementDisabled)
+        {
+            return;
+        }
+
         // Movement: If the enemy is still in movement time or attacking, they move.
         if (Time.time < recoveryTime - idleTime || isAttacking) {
             rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
         }
         // If not, their speed is set to 0 (returns to idle animation)
-        if (Time.time >= recoveryTime - idleTime) {
+        else if (Time.time >= recoveryTime - idleTime) {
             movement = new Vector2(0.0f, 0.0f);
         }
     }
@@ -90,8 +97,6 @@ public class EnemyAI : MonoBehaviour
     void CheckAggro() {
         playerTarget = Physics2D.OverlapCircle(aggroPoint.position, aggroRange, playerLayer);
         if (playerTarget != null) {
-            Debug.Log("Beginning the Chase");
-
             isAttacking = true;
         }
     }
@@ -106,13 +111,15 @@ public class EnemyAI : MonoBehaviour
 
     // After a succesfull attack, turn back and retreat, ignoring aggro range for a while
     public void Retreat() {
-        Debug.Log("Triggering retreat");
+        if (isAttacking)
+        {
+            movement *= -1.0f;
+        }
 
         animator.SetTrigger("Retreat");
 
         isAttacking = false;
         isRetreating = true;
-        movement = movement * -1.0f;
         movementTime = 3.0f;
         idleTime = 3.0f;
         recoveryTime = Time.time + movementTime + idleTime;
@@ -132,12 +139,19 @@ public class EnemyAI : MonoBehaviour
 
     // Die if health reaches 0
     void Die() {
-        Debug.Log("Enemy died!");
+        movementDisabled = true;
 
         // Play death animation
         animator.SetTrigger("Die");
 
         // Disable enemy
+        StartCoroutine(KillEnemy());
+    }
+
+    private IEnumerator KillEnemy()
+    {
+        yield return new WaitForSeconds(1);
+        Destroy(gameObject);
     }
 
     // Debug tool, visualizes aggro range

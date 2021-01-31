@@ -29,9 +29,27 @@ public class PlayerMovement : MonoBehaviour
 
     public Vector2Int currentZone;
 
+    public float invulnerabilityTime;
+    private float currentInvulnTime = 0;
+
     // Update is called once per frame
     void Update()
     {
+        if (GameController.instance.isGameOver)
+        {
+            return;
+        }
+
+        if(currentInvulnTime > 0)
+        {
+            currentInvulnTime -= Time.deltaTime;
+
+            if(currentInvulnTime < 0)
+            {
+                currentInvulnTime = 0;
+            }
+        }
+
         // Input
         // If the attack animation isn't finished yet, we can't move
         if (Time.time >= recoveryTime) {
@@ -40,19 +58,17 @@ public class PlayerMovement : MonoBehaviour
             movement.y = Input.GetAxisRaw("Vertical");
 
             // Save last horizontal direction for animation use
-            if (movement.x > 0.1f) {
+            if (movement.x > 0.1f && animator.GetFloat("LastHorizontal") != 1.0f) {
                 animator.SetFloat("LastHorizontal", 1.0f);
+                attackPoint.localPosition = new Vector3(Math.Abs(attackPoint.localPosition.x), attackPoint.localPosition.y, attackPoint.localPosition.z);
             }
-            if (movement.x < -0.1f) {
+            if (movement.x < -0.1f && animator.GetFloat("LastHorizontal") != -1.0f) {
                 animator.SetFloat("LastHorizontal", -1.0f);
+                attackPoint.localPosition = new Vector3(-attackPoint.localPosition.x, attackPoint.localPosition.y, attackPoint.localPosition.z);
             }
             
             if (Input.GetKeyDown(KeyCode.Space)) {
                 Attack();
-            }
-            // Press Z to trigger taking damage
-            if (Input.GetKeyDown(KeyCode.Z)) {
-                Hurt();
             }
         }
         else {
@@ -68,6 +84,11 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (GameController.instance.isGameOver)
+        {
+            return;
+        }
+
         // Movement
         rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
         Camera.main.transform.position = new Vector3(rb.position.x, rb.position.y, Camera.main.transform.position.z);
@@ -75,6 +96,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (GameController.instance.isGameOver)
+        {
+            return;
+        }
+
         if (collision.gameObject.GetComponent<Exit>() is var exit && exit != null)
         {
             var zone = ZoneGenerator.instance.GetZone(currentZone);
@@ -86,6 +112,11 @@ public class PlayerMovement : MonoBehaviour
             ZoneGenerator.instance.GenerateZone(NewMapPosition(currentZone, currentExitDirection), startPos);
 
             exit.gameObject.SetActive(false);
+        }
+        else if(collision.gameObject.GetComponent<EnemyAI>() is var enemy && enemy != null && currentInvulnTime == 0)
+        {
+            Hurt(enemy.damage);
+            enemy.Retreat();
         }
         else
         {
@@ -107,21 +138,20 @@ public class PlayerMovement : MonoBehaviour
         // Apply damage to all enemies
         foreach(Collider2D enemy in hitEnemies) {
             enemy.GetComponent<EnemyAI>().TakeDamage(attackDamage);
-            Debug.Log("We hit " + enemy.name);
         }
 
     }
 
-    void Hurt() {
+    void Hurt(float damage) {
          // Update time till next action
         recoveryTime = Time.time + hurtTime;
 
         // Play hurt animation
         animator.SetTrigger("Hurt");
 
-        // Reduce health and check for game over
+        GameController.instance.UpdateSpoilage(-damage);
 
-        // If not, apply invulnerability
+        currentInvulnTime = invulnerabilityTime;
     }
 
     // Debug tool, visualizes attack range
