@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 7192728537418264093}
   - component: {fileID: 7192728537418264099}
   - component: {fileID: 660888725}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 7482667652216324306, guid: db750325989564987a34393247d883b4, type: 3}
   m_Color: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
   m_FlipX: 0
@@ -157,10 +157,11 @@ MonoBehaviour:
   attackRange: 10
   enemyLayers:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 256
   attackTime: 0.4
   hurtTime: 0.4
   attackDamage: 1
+  currentZone: {x: 0, y: 0}
 --- !u!95 &7192728537418264099
 Animator:
   serializedVersion: 3
